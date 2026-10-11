@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MindMetrics | Digital wellbeing assessment</title>
+  <meta name="description" content="Estimate a mental health score from your lifestyle and digital usage with a machine learning model.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#assessment">Skip to assessment</a>
+
+  <header class="nav">
+    <div class="wrap nav__inner">
+      <a class="brand" href="#home" aria-label="MindMetrics home">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="10" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="13" r="8" fill="none" stroke="var(--teal)" stroke-width="2"/></svg>
+        MindMetrics
+      </a>
+      <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle menu"><span></span><span></span></button>
+      <nav id="navLinks" class="nav__links" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#assessment">Assessment</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="wrap hero__grid">
+        <div>
+          <h1>Understand Your Digital Wellbeing</h1>
+          <p class="lead">MindMetrics uses a machine learning model to estimate a mental health score from the lifestyle and digital usage details you provide. It takes about two minutes.</p>
+          <a class="btn btn--primary" href="#assessment" id="startBtn">Start Assessment</a>
+        </div>
+        <svg class="hero__art" viewBox="0 0 320 320" role="img" aria-label="Two overlapping circles representing balance between screen time and rest">
+          <circle cx="125" cy="160" r="105" fill="var(--sage-soft)"/>
+          <circle cx="195" cy="160" r="105" fill="none" stroke="var(--teal)" stroke-width="2"/>
+          <circle cx="125" cy="160" r="105" fill="none" stroke="var(--forest)" stroke-width="2"/>
+          <path d="M160 70a105 105 0 0 1 0 180a105 105 0 0 1 0-180z" fill="var(--teal)" fill-opacity=".18"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="section" id="assessment" aria-labelledby="formTitle">
+      <div class="wrap narrow">
+        <h2 id="formTitle">Your assessment</h2>
+        <p class="muted">All fields are required. Values are sent only to the prediction server you configured.</p>
+
+        <div id="alert" class="alert" role="alert" hidden>
+          <p id="alertMsg"></p>
+          <button type="button" class="btn btn--ghost" id="retryBtn" hidden>Retry</button>
+        </div>
+
+        <form id="form" novalidate>
+          <fieldset class="card">
+            <legend>Personal information</legend>
+            <div class="grid">
+              <div class="field"><label for="age">Age</label>
+                <input id="age" name="age" type="number" min="10" max="100" step="1" inputmode="numeric" required>
+                <small id="age-hint">Whole number, 10 to 100</small><span class="err" id="age-err"></span></div>
+              <div class="field"><label for="gender">Gender</label>
+                <select id="gender" name="gender" required><option value="">Select</option><option>Male</option><option>Female</option></select>
+                <small id="gender-hint">As used in the model's training data</small><span class="err" id="gender-err"></span></div>
+              <div class="field"><label for="country">Country</label>
+                <input id="country" name="country" list="countries" type="text" autocomplete="off" required>
+                <datalist id="countries">
+                  <option value="India"><option value="USA"><option value="Canada"><option value="Australia"><option value="UK"><option value="Germany"><option value="Mexico"><option value="Turkey"><option value="France"><option value="Brazil"><option value="China"><option value="Japan"><option value="Italy"><option value="Spain"><option value="Pakistan"><option value="Bangladesh"><option value="Nigeria"><option value="South Africa"><option value="Other">
+                </datalist>
+                <small id="country-hint">Pick a suggestion or type a name</small><span class="err" id="country-err"></span></div>
+              <div class="field"><label for="academic_level">Academic level</label>
+                <select id="academic_level" name="academic_level" required><option value="">Select</option><option>High School</option><option>Undergraduate</option><option>Graduate</option></select>
+                <small id="academic_level-hint">Your current level of study</small><span class="err" id="academic_level-err"></span></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="card">
+            <legend>Digital habits</legend>
+            <div class="grid">
+              <div class="field"><label for="most_used_platform">Most-used platform</label>
+                <select id="most_used_platform" name="most_used_platform" required><option value="">Select</option>
+                  <option>Facebook</option><option>LinkedIn</option><option>Instagram</option><option>Snapchat</option><option>Twitter</option><option>YouTube</option><option>TikTok</option><option>LINE</option><option>KakaoTalk</option><option>VKontakte</option><option>WhatsApp</option><option>WeChat</option></select>
+                <small id="most_used_platform-hint">The app you open most</small><span class="err" id="most_used_platform-err"></span></div>
+              <div class="field"><label for="purpose_of_use">Purpose of use</label>
+                <select id="purpose_of_use" name="purpose_of_use" required><option value="">Select</option><option>Networking</option><option>Education</option><option>Entertainment</option><option>News</option></select>
+                <small id="purpose_of_use-hint">Your main reason for using it</small><span class="err" id="purpose_of_use-err"></span></div>
+              <div class="field"><label for="avg_daily_usage_hours">Daily usage (hours)</label>
+                <input id="avg_daily_usage_hours" name="avg_daily_usage_hours" type="number" min="0" max="24" step="0.1" inputmode="decimal" required>
+                <small id="avg_daily_usage_hours-hint">Average per day, 0 to 24</small><span class="err" id="avg_daily_usage_hours-err"></span></div>
+              <div class="field"><label for="daily_unlocks">Daily phone unlocks</label>
+                <input id="daily_unlocks" name="daily_unlocks" type="number" min="0" step="1" inputmode="numeric" required>
+                <small id="daily_unlocks-hint">Whole number, 0 or more</small><span class="err" id="daily_unlocks-err"></span></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="card">
+            <legend>Lifestyle and wellbeing</legend>
+            <div class="grid">
+              <div class="field"><label for="study_hours">Study hours per day</label>
+                <input id="study_hours" name="study_hours" type="number" min="0" max="24" step="0.1" inputmode="decimal" required>
+                <small id="study_hours-hint">0 to 24</small><span class="err" id="study_hours-err"></span></div>
+              <div class="field"><label for="physical_activity_hours">Physical activity (hours)</label>
+                <input id="physical_activity_hours" name="physical_activity_hours" type="number" min="0" max="2" step="0.1" inputmode="decimal" required>
+                <small id="physical_activity_hours-hint">Per day, 0 to 2</small><span class="err" id="physical_activity_hours-err"></span></div>
+              <div class="field"><label for="sleep_hours_per_night">Sleep per night (hours)</label>
+                <input id="sleep_hours_per_night" name="sleep_hours_per_night" type="number" min="0" max="24" step="0.1" inputmode="decimal" required>
+                <small id="sleep_hours_per_night-hint">0 to 24</small><span class="err" id="sleep_hours_per_night-err"></span></div>
+              <div class="field"><label for="stress_level">Stress level</label>
+                <select id="stress_level" name="stress_level" required><option value="">Select</option><option>Low</option><option>Medium</option><option>High</option><option>Very High</option></select>
+                <small id="stress_level-hint">How stressed you usually feel</small><span class="err" id="stress_level-err"></span></div>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button type="submit" class="btn btn--primary" id="submitBtn"><span class="spinner" aria-hidden="true"></span><span id="submitLabel">Get my estimate</span></button>
+            <button type="button" class="btn btn--ghost" id="resetBtn">Reset assessment</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="result" aria-live="polite" hidden>
+      <div class="wrap narrow">
+        <div class="card result">
+          <div class="ring" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><circle class="ring__bg" cx="60" cy="60" r="52"/><circle class="ring__fg" id="ringFg" cx="60" cy="60" r="52"/></svg>
+            <div class="ring__value" id="scoreValue">–</div>
+          </div>
+          <div>
+            <h2>Predicted mental health score</h2>
+            <p>The model returned <strong id="scoreText"></strong> for the details you entered.</p>
+            <p class="muted">This is an estimate from a machine learning model, not a clinical diagnosis, and it does not replace advice from a mental health professional. The ring is drawn on a 0 to 100 visual scale for display only; the score range has not been verified against the model's training data, so no health categories are assigned.</p>
+            <p class="warn" id="rangeNote" hidden>This score is outside the 0 to 100 range the ring is drawn on. The number shown is the exact value returned.</p>
+            <button type="button" class="btn btn--primary" id="againBtn">Predict again</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="wrap narrow">
+        <h2>About</h2>
+        <p>MindMetrics sends your answers to a FastAPI service that runs a trained regression model and returns one number. Nothing is stored by this page. If you are struggling with your mental health, please contact a qualified professional or a local helpline.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="wrap">MindMetrics. An educational project, not a medical device.</div></footer>
+  <script src="script.js"></script>
+</body>
+</html>
