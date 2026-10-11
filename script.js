@@ -3,7 +3,7 @@
 /* ---------- Configuration ---------- */
 // Existing FastAPI endpoint (POST). Do not change field names below:
 // they must match the Pydantic StudentData model exactly.
-const API_URL = "http://127.0.0.1:8000/predict";
+const API_URL = "https://mindmetrics-mjm5.onrender.com";
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 52; // matches r="52" in index.html
 const RING_SCALE_MAX = 100; // display-only scale; not a verified model range
