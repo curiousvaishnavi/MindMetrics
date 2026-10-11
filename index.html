@@ -125,15 +125,15 @@
     <section class="section section--tint" id="result" aria-live="polite" hidden>
       <div class="wrap narrow">
         <div class="card result">
-          <div class="ring" aria-hidden="true">
-            <svg viewBox="0 0 120 120"><circle class="ring__bg" cx="60" cy="60" r="52"/><circle class="ring__fg" id="ringFg" cx="60" cy="60" r="52"/></svg>
-            <div class="ring__value" id="scoreValue">–</div>
+          <div class="ring" role="img" id="ring" aria-label="Score gauge on a scale from 0 to 10">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring__bg" cx="60" cy="60" r="52"/><circle class="ring__fg" id="ringFg" cx="60" cy="60" r="52"/></svg>
+            <div class="ring__value"><span id="scoreValue">–</span><span class="ring__max">/ 10</span></div>
           </div>
           <div>
-            <h2>Predicted mental health score</h2>
-            <p>The model returned <strong id="scoreText"></strong> for the details you entered.</p>
-            <p class="muted">This is an estimate from a machine learning model, not a clinical diagnosis, and it does not replace advice from a mental health professional. The ring is drawn on a 0 to 100 visual scale for display only; the score range has not been verified against the model's training data, so no health categories are assigned.</p>
-            <p class="warn" id="rangeNote" hidden>This score is outside the 0 to 100 range the ring is drawn on. The number shown is the exact value returned.</p>
+            <h2>Predicted score</h2>
+            <p class="score-line"><strong id="scoreText"></strong></p>
+            <p>The model returned this value for the details you entered. The gauge shows where it falls on the model's 0 to 10 scale. This app does not label higher or lower scores as better or worse.</p>
+            <p class="disclaimer">This score is an ML model prediction based on the provided inputs. It is not a clinical diagnosis or a substitute for professional assessment.</p>
             <button type="button" class="btn btn--primary" id="againBtn">Predict again</button>
           </div>
         </div>

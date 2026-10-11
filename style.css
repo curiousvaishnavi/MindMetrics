@@ -95,8 +95,10 @@ small { color: var(--muted); font-size: .82rem; }
 .ring circle { fill: none; stroke-width: 9; }
 .ring__bg { stroke: var(--sage-soft); }
 .ring__fg { stroke: var(--forest); stroke-linecap: round; stroke-dasharray: 326.73; stroke-dashoffset: 326.73; transition: stroke-dashoffset 1.2s cubic-bezier(.2, .7, .2, 1); }
-.ring__value { position: absolute; inset: 0; display: grid; place-items: center; font: 600 2.2rem var(--serif); color: var(--forest); }
-.warn { color: #7a5a14; background: #fbf3dc; border-radius: 10px; padding: .6rem .85rem; font-size: .9rem; }
+.ring__value { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font: 600 2.6rem/1 var(--serif); color: var(--forest); }
+.ring__max { margin-top: .35rem; font: 500 1rem var(--sans); color: var(--muted); }
+.score-line { font: 600 1.6rem var(--serif); color: var(--forest); margin-bottom: .75rem; }
+.disclaimer { background: var(--tint); border-left: 3px solid var(--teal); border-radius: 8px; padding: .75rem 1rem; font-size: .92rem; }
 
 .footer { border-top: 1px solid var(--line); padding: 1.5rem 0; color: var(--muted); font-size: .9rem; }
 

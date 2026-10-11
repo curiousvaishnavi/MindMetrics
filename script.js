@@ -1,12 +1,15 @@
 "use strict";
 
 /* ---------- Configuration ---------- */
-// Existing FastAPI endpoint (POST). Do not change field names below:
-// they must match the Pydantic StudentData model exactly.
-const API_URL = "https://mindmetrics-mjm5.onrender.com/predict";
+// >>> API URL: the ONLY place to change where predictions are requested. <<<
+// Local testing: "http://127.0.0.1:8000/predict"
+// Deployed: replace with your Render URL ending in /predict, e.g. "https://<your-service>.onrender.com/predict"
+const API_URL = "http://127.0.0.1:8000/predict";
 
+// The model's target score range is 0 to 10.
+const SCORE_MIN = 0;
+const SCORE_MAX = 10;
 const RING_CIRCUMFERENCE = 2 * Math.PI * 52; // matches r="52" in index.html
-const RING_SCALE_MAX = 100; // display-only scale; not a verified model range
 
 /* Validation rules mirror the backend schema. */
 const FIELDS = {
@@ -117,18 +120,24 @@ function hideResult() {
   ringFg.style.strokeDashoffset = RING_CIRCUMFERENCE;
 }
 
-// Show the real score returned by the API; never clamp or alter the number.
+// Format for display: max 2 decimals, no trailing zeros (7.80 -> "7.8").
+function formatScore(score) {
+  return String(Number(score.toFixed(2)));
+}
+
+// Show the real score returned by the API as "x / 10". Never hardcode a score.
 function showResult(score) {
-  $("scoreValue").textContent = String(score);
-  $("scoreText").textContent = String(score);
-  $("rangeNote").hidden = score >= 0 && score <= RING_SCALE_MAX;
+  const text = formatScore(score);
+  $("scoreValue").textContent = text;
+  $("scoreText").textContent = `${text} / ${SCORE_MAX}`;
+  $("ring").setAttribute("aria-label", `Predicted score ${text} out of ${SCORE_MAX}`);
 
   resultSection.hidden = false;
-  ringFg.style.strokeDashoffset = RING_CIRCUMFERENCE;
+  ringFg.style.strokeDashoffset = RING_CIRCUMFERENCE; // start empty, then animate
   resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  // Ring fill is clamped for drawing only; the displayed number is untouched.
-  const fraction = Math.min(Math.max(score / RING_SCALE_MAX, 0), 1);
+  // Gauge is scaled 0-10 (score is already validated to be inside this range).
+  const fraction = (score - SCORE_MIN) / (SCORE_MAX - SCORE_MIN);
   requestAnimationFrame(() => requestAnimationFrame(() => {
     ringFg.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - fraction);
   }));
@@ -150,6 +159,7 @@ function handleValidationResponse(body) {
 
 /* ---------- API integration ---------- */
 async function requestPrediction(payload) {
+  if (submitBtn.disabled) return; // a request is already running
   hideError();
   hideResult();
   setLoading(true);
@@ -173,9 +183,14 @@ async function requestPrediction(payload) {
       return;
     }
 
+    // Validate the prediction before showing anything.
     const score = body && body.predicted_mental_health_score;
     if (typeof score !== "number" || !Number.isFinite(score)) {
-      showError("The server responded, but the result was not in the expected format. No score is shown.", true);
+      showError("The server responded, but the prediction was missing or not a number. No score is shown.", true);
+      return;
+    }
+    if (score < SCORE_MIN || score > SCORE_MAX) {
+      showError(`The server returned ${score}, which is outside the expected ${SCORE_MIN} to ${SCORE_MAX} range. No score is shown.`, true);
       return;
     }
 
@@ -183,7 +198,7 @@ async function requestPrediction(payload) {
   } catch (err) {
     // fetch() rejects on network failure, server down, or a CORS block.
     showError(
-      `Could not reach the prediction server at ${API_URL}. Make sure FastAPI is running on port 8000. If it is running, open DevTools (F12) > Console to check for a CORS error.`,
+      `Could not reach the prediction server at ${API_URL}. Check that the API is running and the URL is correct. A free Render service may need up to a minute to wake up, so try again shortly. If it keeps failing, open DevTools (F12) > Console to check for a CORS error.`,
       true
     );
     console.error("Prediction request failed:", err);
