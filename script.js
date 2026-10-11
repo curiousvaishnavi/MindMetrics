@@ -4,7 +4,7 @@
 // >>> API URL: the ONLY place to change where predictions are requested. <<<
 // Local testing: "http://127.0.0.1:8000/predict"
 // Deployed: replace with your Render URL ending in /predict, e.g. "https://<your-service>.onrender.com/predict"
-const API_URL = "http://127.0.0.1:8000/predict";
+const API_URL = "https://mindmetrics-mjm5.onrender.com/predict";
 
 // The model's target score range is 0 to 10.
 const SCORE_MIN = 0;
